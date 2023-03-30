@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -e
+
+echo "-----> Install heroku-buildpack-ssh-key"
+
+if [[ -z $BUILDPACK_SSH_KEY ]]; then
+    echo "       Did you forget to set BUILDPACK_SSH_KEY?"
+    exit 1
+fi
+
+if [[ -z $BUILDPACK_SSH_HOST ]]; then
+  BUILDPACK_SSH_HOST=*
+fi
+
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+
+# create the ssh config
+echo "Host $BUILDPACK_SSH_HOST" >> ~/.ssh/config
+if [[ $BUILDPACK_SSH_USER ]]; then
+  echo "   User $BUILDPACK_SSH_USER" >> ~/.ssh/config
+fi
+echo "   IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
+echo "   UserKnownHostsFile /dev/null" >> ~/.ssh/config
+echo "   StrictHostKeyChecking no" >> ~/.ssh/config
+echo "   LogLevel ERROR" >> ~/.ssh/config
+echo "-----> Installed SSH key from BUILDPACK_SSH_KEY"
+
+# install the ssh key
+ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> /dev/null
+
+echo -e "$BUILDPACK_SSH_KEY" > ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa
