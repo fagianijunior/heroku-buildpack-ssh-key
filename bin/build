@@ -31,4 +31,10 @@ echo "-----> Installed SSH key from BUILDPACK_SSH_KEY"
 ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> /dev/null
 
 sed -e 's/^"//' -e 's/"$//' -e 's/\\n/\n/g' <<<"$BUILDPACK_SSH_KEY" >> ~/.ssh/id_rsa
+echo "%%%%%%%%%%%%%%%%%%"
+echo $BUILDPACK_SSH_KEY
+echo "%%%%%%%%%%%%%%%%%%"
+cat ~/.ssh/id_rsa
+echo "%%%%%%%%%%%%%%%%%%"
+
 chmod 600 ~/.ssh/id_rsa
