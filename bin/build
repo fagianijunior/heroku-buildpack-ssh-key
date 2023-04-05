@@ -13,29 +13,25 @@ if [[ -z $BUILDPACK_SSH_HOST ]]; then
   BUILDPACK_SSH_HOST=*
 fi
 
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
+mkdir -p /workspace/.ssh
+chmod 700 /workspace/.ssh
 
 # create the ssh config
-echo "Host $BUILDPACK_SSH_HOST" >> ~/.ssh/config
+echo "Host $BUILDPACK_SSH_HOST" >> /workspace/.ssh/config
 if [[ $BUILDPACK_SSH_USER ]]; then
-  echo "   User $BUILDPACK_SSH_USER" >> ~/.ssh/config
+  echo "   User $BUILDPACK_SSH_USER" >> /workspace/.ssh/config
 fi
-echo "   IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
-echo "   UserKnownHostsFile /dev/null" >> ~/.ssh/config
-echo "   StrictHostKeyChecking no" >> ~/.ssh/config
-echo "   LogLevel ERROR" >> ~/.ssh/config
+echo "   IdentityFile /workspace/.ssh/id_rsa" >> /workspace/.ssh/config
+echo "   UserKnownHostsFile /dev/null" >> /workspace/.ssh/config
+echo "   StrictHostKeyChecking no" >> /workspace/.ssh/config
+echo "   LogLevel ERROR" >> /workspace/.ssh/config
 echo "-----> Installed SSH key from BUILDPACK_SSH_KEY"
 
 # install the ssh key
-ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> /dev/null
-echo "-----BEGIN RSA PRIVATE KEY-----" > ~/.ssh/id_rsa
-sed -e 's/^"//' -e 's/"$//' -e 's/\\n/\n/g' <<<"$BUILDPACK_SSH_KEY" >> ~/.ssh/id_rsa
-echo "-----END RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
-echo "%%%%%%%%%%%%%%%%%%"
-echo $BUILDPACK_SSH_KEY
-echo "%%%%%%%%%%%%%%%%%%"
-cat ~/.ssh/id_rsa
-echo "%%%%%%%%%%%%%%%%%%"
+ssh-keyscan -H github.com >> /workspace/.ssh/known_hosts 2> /dev/null
 
-chmod 600 ~/.ssh/id_rsa
+echo "-----BEGIN RSA PRIVATE KEY-----" > /workspace/.ssh/id_rsa
+sed -e 's/^"//' -e 's/"$//' -e 's/\\n/\n/g' <<<"$BUILDPACK_SSH_KEY" >> /workspace/.ssh/id_rsa
+echo "-----END RSA PRIVATE KEY-----" >> /workspace/.ssh/id_rsa
+
+chmod 600 /workspace/.ssh/id_rsa
